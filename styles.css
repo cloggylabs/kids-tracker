@@ -239,7 +239,8 @@ dialog {
 dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
 .dialog-form { display: flex; flex-direction: column; gap: 14px; }
 .dialog-form h2 { font-size: 18px; }
-.dialog-form label { display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 600; color: var(--text-secondary); }
+.dialog-form label,
+.dialog-form .field { display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 600; color: var(--text-secondary); }
 .dialog-form input[type="text"],
 .dialog-form input[type="date"],
 .dialog-form input[type="number"] {
