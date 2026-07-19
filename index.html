@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>Crece · Seguimiento de crecimiento</title>
+  <meta name="description" content="Registra el peso, la talla y las fotos del crecimiento de tus hijos. Todos los datos se guardan en tu dispositivo.">
+  <meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1a1a19" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Crece">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="app-title">
+    <span class="app-logo">🌱</span>
+    <h1>Crece</h1>
+  </div>
+  <div class="kid-chips" id="kidChips"></div>
+</header>
+
+<main id="main">
+
+  <!-- Vista: Registros -->
+  <section class="view" id="view-registros">
+    <div class="empty-state" id="emptyRegistros" hidden>
+      <div class="empty-icon">📏</div>
+      <h2>Sin registros todavía</h2>
+      <p>Toca el botón <strong>+</strong> para agregar el primer peso y talla.</p>
+    </div>
+    <ul class="entry-list" id="entryList"></ul>
+  </section>
+
+  <!-- Vista: Gráficas -->
+  <section class="view" id="view-graficas" hidden>
+    <div class="empty-state" id="emptyGraficas" hidden>
+      <div class="empty-icon">📈</div>
+      <h2>Aún no hay datos que graficar</h2>
+      <p>Agrega al menos dos registros para ver el avance.</p>
+    </div>
+    <div class="chart-card" id="weightCard">
+      <div class="chart-head">
+        <h2>Peso</h2>
+        <span class="chart-latest" id="weightLatest"></span>
+      </div>
+      <div class="chart-wrap"><svg id="weightChart" role="img" aria-label="Gráfica de peso en kilogramos a lo largo del tiempo"></svg></div>
+    </div>
+    <div class="chart-card" id="heightCard">
+      <div class="chart-head">
+        <h2>Talla</h2>
+        <span class="chart-latest" id="heightLatest"></span>
+      </div>
+      <div class="chart-wrap"><svg id="heightChart" role="img" aria-label="Gráfica de talla en centímetros a lo largo del tiempo"></svg></div>
+    </div>
+    <div class="chart-card" id="tableCard">
+      <div class="chart-head"><h2>Tabla de datos</h2></div>
+      <div class="table-wrap">
+        <table class="data-table" id="dataTable">
+          <thead><tr><th>Fecha</th><th>Edad</th><th>Peso (kg)</th><th>Talla (cm)</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vista: Fotos -->
+  <section class="view" id="view-fotos" hidden>
+    <div class="empty-state" id="emptyFotos" hidden>
+      <div class="empty-icon">📷</div>
+      <h2>Sin fotos todavía</h2>
+      <p>Al agregar un registro puedes incluir una foto del momento.</p>
+    </div>
+    <div class="photo-grid" id="photoGrid"></div>
+  </section>
+
+  <!-- Vista: Ajustes -->
+  <section class="view" id="view-ajustes" hidden>
+    <div class="settings-group">
+      <h2>Perfil</h2>
+      <div class="settings-card" id="kidProfileCard"></div>
+    </div>
+    <div class="settings-group">
+      <h2>Respaldo</h2>
+      <div class="settings-card">
+        <button class="settings-btn" id="btnExport">⬇️ Exportar todos los datos</button>
+        <button class="settings-btn" id="btnImport">⬆️ Importar respaldo</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+        <p class="settings-note">El respaldo incluye todos los perfiles, registros y fotos en un archivo JSON. Guárdalo en iCloud, Archivos o donde prefieras.</p>
+      </div>
+    </div>
+    <div class="settings-group">
+      <h2>Almacenamiento</h2>
+      <div class="settings-card">
+        <p class="settings-note" id="storageInfo">Calculando…</p>
+        <p class="settings-note">Todos los datos viven únicamente en este dispositivo. Nada se envía a internet.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<button class="fab" id="fabAdd" aria-label="Agregar registro">+</button>
+
+<nav class="tab-bar">
+  <button class="tab active" data-view="registros"><span class="tab-icon">📋</span><span>Registros</span></button>
+  <button class="tab" data-view="graficas"><span class="tab-icon">📈</span><span>Gráficas</span></button>
+  <button class="tab" data-view="fotos"><span class="tab-icon">📷</span><span>Fotos</span></button>
+  <button class="tab" data-view="ajustes"><span class="tab-icon">⚙️</span><span>Ajustes</span></button>
+</nav>
+
+<!-- Diálogo: agregar/editar niño -->
+<dialog id="kidDialog">
+  <form method="dialog" class="dialog-form" id="kidForm">
+    <h2 id="kidDialogTitle">Nuevo peque</h2>
+    <label>Nombre
+      <input type="text" name="name" required autocomplete="off" placeholder="p. ej. Sofía">
+    </label>
+    <label>Fecha de nacimiento
+      <input type="date" name="birthdate" required>
+    </label>
+    <label>Emoji
+      <div class="emoji-row" id="emojiRow"></div>
+      <input type="hidden" name="emoji" value="🐣">
+    </label>
+    <div class="dialog-actions">
+      <button type="button" class="btn ghost" data-close>Cancelar</button>
+      <button type="submit" class="btn primary" id="kidSaveBtn">Guardar</button>
+    </div>
+    <button type="button" class="btn danger-link" id="kidDeleteBtn" hidden>Eliminar este perfil y sus datos</button>
+  </form>
+</dialog>
+
+<!-- Diálogo: agregar/editar registro -->
+<dialog id="entryDialog">
+  <form method="dialog" class="dialog-form" id="entryForm">
+    <h2 id="entryDialogTitle">Nuevo registro</h2>
+    <label>Fecha
+      <input type="date" name="date" required>
+    </label>
+    <div class="field-row">
+      <label>Peso (kg)
+        <input type="number" name="weight" step="0.01" min="0" max="200" inputmode="decimal" placeholder="12.4">
+      </label>
+      <label>Talla (cm)
+        <input type="number" name="height" step="0.1" min="0" max="250" inputmode="decimal" placeholder="86.5">
+      </label>
+    </div>
+    <label>Foto (opcional)
+      <input type="file" name="photo" accept="image/*">
+    </label>
+    <div class="photo-preview" id="photoPreview" hidden>
+      <img id="photoPreviewImg" alt="Vista previa de la foto">
+      <button type="button" class="btn ghost small" id="photoRemoveBtn">Quitar foto</button>
+    </div>
+    <label>Nota (opcional)
+      <input type="text" name="note" autocomplete="off" placeholder="p. ej. control pediátrico">
+    </label>
+    <div class="dialog-actions">
+      <button type="button" class="btn ghost" data-close>Cancelar</button>
+      <button type="submit" class="btn primary">Guardar</button>
+    </div>
+    <button type="button" class="btn danger-link" id="entryDeleteBtn" hidden>Eliminar este registro</button>
+  </form>
+</dialog>
+
+<!-- Visor de foto -->
+<dialog id="photoViewer" class="photo-viewer">
+  <img id="photoViewerImg" alt="Foto ampliada">
+  <p id="photoViewerCaption"></p>
+  <button class="btn ghost" id="photoViewerClose">Cerrar</button>
+</dialog>
+
+<div class="chart-tooltip" id="chartTooltip" hidden></div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>
