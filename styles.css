@@ -256,6 +256,20 @@ main { padding: 16px; max-width: 640px; margin: 0 auto; }
   cursor: pointer;
   z-index: 20;
 }
+.fab-tip {
+  position: fixed;
+  left: 18px;
+  bottom: calc(76px + env(safe-area-inset-bottom));
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  font-size: 19px; line-height: 1;
+  box-shadow: 0 2px 8px rgba(11, 11, 11, 0.12);
+  cursor: pointer;
+  opacity: 0.85;
+  z-index: 20;
+}
 .tab-bar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
   display: flex;

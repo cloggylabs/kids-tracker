@@ -824,7 +824,9 @@ async function importData(file) {
 function switchView(name) {
   document.querySelectorAll('.view').forEach(v => { v.hidden = v.id !== `view-${name}`; });
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === name));
-  $('#fabAdd').style.display = (name === 'registros' || name === 'graficas' || name === 'fotos') ? '' : 'none';
+  const contentView = name === 'registros' || name === 'graficas' || name === 'fotos';
+  $('#fabAdd').style.display = contentView ? '' : 'none';
+  $('#fabTip').style.display = contentView ? '' : 'none';
   if (name === 'graficas') renderCharts();
 }
 
@@ -935,6 +937,7 @@ async function main() {
 
   // propinas
   $('#btnTip').onclick = () => $('#tipDialog').showModal();
+  $('#fabTip').onclick = () => $('#tipDialog').showModal();
   $('#tipCopyBtn').onclick = async () => {
     try {
       await navigator.clipboard.writeText('@NEQUIJOS86891');
