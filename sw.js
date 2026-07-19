@@ -1,5 +1,5 @@
 /* Service worker: cachea la app para que funcione sin conexión */
-const CACHE = 'crece-v5';
+const CACHE = 'crece-v6';
 const ASSETS = [
   './',
   './index.html',
