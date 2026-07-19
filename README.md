@@ -1,70 +1,72 @@
 # Crece 🌱
 
-App para seguir el crecimiento de tus hijos: peso, talla y fotos del avance.
-Es una **PWA** (aplicación web instalable): se agrega a la pantalla de inicio del
-iPhone y se ve como app nativa, **sin pasar por el App Store**.
+**English** · [Español](README.es.md)
 
-**Todos los datos viven únicamente en el dispositivo** (IndexedDB). Nada se
-envía a ningún servidor.
+An app to track your kids' growth: weight, height, and progress photos.
+It's a **PWA** (installable web app): add it to your iPhone home screen and it
+looks and feels like a native app — **no App Store required**.
 
-## Funciones
+**All data lives only on your device** (IndexedDB). Nothing is ever sent to a
+server.
 
-- Varios perfiles (un chip por cada peque, con emoji).
-- Registros de peso y talla con fecha, nota y foto opcional; muestra la edad en
-  cada registro y el cambio respecto al registro anterior.
-- Gráficas de peso y talla a lo largo del tiempo, con tooltip al tocar y tabla
-  de datos. Modo claro y oscuro automático.
-- Galería de fotos ordenada por edad.
-- Respaldo: exporta/importa todo (perfiles, registros y fotos) en un archivo
-  JSON que puedes guardar en iCloud o Archivos.
-- Funciona sin conexión (service worker) cuando se sirve por HTTPS.
+## Features
 
-## Probarla en la Mac
+- Multiple profiles (one chip per kid, with emoji).
+- Weight and height entries with date, note, and optional photo; each entry
+  shows the kid's age at that moment and the change since the previous entry.
+- Weight and height charts over time, with touch tooltips and a data table.
+  Automatic light and dark mode.
+- Photo gallery ordered by age.
+- Backup: export/import everything (profiles, entries, and photos) as a single
+  JSON file you can keep in iCloud or Files.
+- Works offline (service worker) when served over HTTPS.
+
+## Try it on your Mac
 
 ```sh
 cd kids-tracker
 python3 -m http.server 8000
 ```
 
-Abre <http://localhost:8000>. Para ver datos de ejemplo sin crear un perfil,
-abre <http://localhost:8000/#demo> (o `#demo/graficas`, `#demo/fotos`).
+Open <http://localhost:8000>. To see sample data without creating a profile,
+open <http://localhost:8000/#demo> (or `#demo/graficas`, `#demo/fotos`).
 
-## Usarla en el iPhone
+## Use it on your iPhone
 
-### Opción A — Servida desde tu Mac (misma red WiFi)
+### Option A — Served from your Mac (same WiFi network)
 
-1. En la Mac: `python3 -m http.server 8000 --bind 0.0.0.0`
-2. Averigua la IP de tu Mac: `ipconfig getifaddr en0`
-3. En Safari del iPhone abre `http://<ip-de-tu-mac>:8000`
-4. Botón **Compartir → Agregar a pantalla de inicio**.
+1. On the Mac: `python3 -m http.server 8000 --bind 0.0.0.0`
+2. Find your Mac's IP: `ipconfig getifaddr en0`
+3. In Safari on the iPhone open `http://<your-mac-ip>:8000`
+4. **Share → Add to Home Screen**.
 
-Los datos se guardan en el iPhone, pero como es `http` (no HTTPS) el modo sin
-conexión no funciona: la app necesita que la Mac esté sirviendo para *abrirse*
-(los datos no se pierden, solo la carga inicial la sirve la Mac).
+Data is stored on the iPhone, but since this is `http` (not HTTPS) offline mode
+won't work: the app needs the Mac to be serving in order to *load* (your data
+is never lost — only the initial load comes from the Mac).
 
-### Opción B — GitHub Pages (recomendada para el día a día)
+### Option B — GitHub Pages (recommended for daily use)
 
-Sube este repo a GitHub y activa Pages. Al servirse por HTTPS el service worker
-sí se registra: la app **funciona 100 % sin conexión** después de la primera
-carga, y tus datos siguen guardándose solo en el teléfono (la página es
-estática, no hay servidor que reciba nada). Luego en Safari:
-**Compartir → Agregar a pantalla de inicio**.
+Push this repo to GitHub and enable Pages. Served over HTTPS, the service
+worker registers: the app **works 100% offline** after the first load, and
+your data still lives only on the phone (the page is static — there is no
+server receiving anything). Then in Safari:
+**Share → Add to Home Screen**.
 
-## Consejos
+## Tips
 
-- Haz un **respaldo** (Ajustes → Exportar) de vez en cuando: iOS puede borrar
-  datos de sitios web que no se visitan en mucho tiempo. La app pide
-  almacenamiento persistente, pero el respaldo es la red de seguridad.
-- Las fotos se reducen a máx. 1280 px y se comprimen a JPEG para no llenar el
-  teléfono.
+- Make a **backup** (Settings → Export) every so often: iOS may evict data for
+  websites that go unvisited for a long time. The app requests persistent
+  storage, but the backup file is your safety net.
+- Photos are resized to max 1280 px and compressed to JPEG so they don't fill
+  up your phone.
 
-## Estructura
+## Structure
 
-| Archivo | Qué es |
+| File | What it is |
 |---|---|
-| `index.html` | Estructura de la app (vistas, diálogos) |
-| `styles.css` | Estilos, tokens de color claro/oscuro |
-| `app.js` | Lógica: IndexedDB, registros, gráficas SVG, respaldo |
-| `sw.js` | Service worker (caché para funcionar offline) |
-| `manifest.webmanifest` | Manifiesto PWA (nombre, íconos, standalone) |
-| `icons/` | Íconos de la app |
+| `index.html` | App structure (views, dialogs) |
+| `styles.css` | Styles, light/dark color tokens |
+| `app.js` | Logic: IndexedDB, entries, SVG charts, backup |
+| `sw.js` | Service worker (cache for offline use) |
+| `manifest.webmanifest` | PWA manifest (name, icons, standalone) |
+| `icons/` | App icons |
