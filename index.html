@@ -121,6 +121,13 @@
       </div>
     </div>
     <div class="settings-group">
+      <h2 data-i18n="support">Apoyo</h2>
+      <div class="settings-card">
+        <p class="settings-note" data-i18n="tipNote">Esta app es gratuita y sin anuncios. Si te sirve, puedes apoyarme con una propina voluntaria.</p>
+        <button class="tip-cta" id="btnTip" data-i18n="tipBtn">☕ Invítame un café</button>
+      </div>
+    </div>
+    <div class="settings-group">
       <h2 data-i18n="storage">Almacenamiento</h2>
       <div class="settings-card">
         <p class="settings-note" id="storageInfo"></p>
@@ -194,6 +201,15 @@
     </div>
     <button type="button" class="btn danger-link" id="entryDeleteBtn" data-i18n="deleteEntryBtn" hidden>Eliminar este registro</button>
   </form>
+</dialog>
+
+<!-- Diálogo: propinas -->
+<dialog id="tipDialog" class="tip-dialog">
+  <h2 data-i18n="tipTitle">¡Gracias por tu apoyo! ☕</h2>
+  <p class="settings-note" data-i18n="tipScan">Escanea el código con tu app de pagos (Bre-B / Nequi):</p>
+  <img src="donate-qr.jpg" alt="QR Bre-B / Nequi — @NEQUIJOS86891">
+  <button type="button" class="btn primary" id="tipCopyBtn" data-i18n="tipCopy">Copiar llave @NEQUIJOS86891</button>
+  <button type="button" class="btn ghost" data-close data-i18n="close">Cerrar</button>
 </dialog>
 
 <!-- Visor de foto -->

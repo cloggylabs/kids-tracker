@@ -114,6 +114,13 @@ const I18N = {
     bornOn: (d, a) => `Nació el ${d} · ${a}`,
     editProfileBtn: '✏️ Editar perfil',
     noProfile: 'No hay ningún perfil todavía.',
+    support: 'Apoyo',
+    tipNote: 'Esta app es gratuita y sin anuncios. Si te sirve, puedes apoyarme con una propina voluntaria.',
+    tipBtn: '☕ Invítame un café',
+    tipTitle: '¡Gracias por tu apoyo! ☕',
+    tipScan: 'Escanea el código con tu app de pagos (Bre-B / Nequi):',
+    tipCopy: 'Copiar llave @NEQUIJOS86891',
+    tipCopied: 'Llave copiada ✓',
   },
   en: {
     tabRecords: 'Records', tabCharts: 'Charts', tabPhotos: 'Photos', tabSettings: 'Settings',
@@ -158,6 +165,13 @@ const I18N = {
     bornOn: (d, a) => `Born ${d} · ${a}`,
     editProfileBtn: '✏️ Edit profile',
     noProfile: 'No profile yet.',
+    support: 'Support',
+    tipNote: 'This app is free and ad-free. If it helps you, you can support me with a voluntary tip.',
+    tipBtn: '☕ Buy me a coffee',
+    tipTitle: 'Thanks for your support! ☕',
+    tipScan: 'Scan the code with your payments app (Bre-B / Nequi):',
+    tipCopy: 'Copy key @NEQUIJOS86891',
+    tipCopied: 'Key copied ✓',
   },
 };
 
@@ -918,6 +932,17 @@ async function main() {
     b.onclick = () => b.closest('dialog').close();
   });
   $('#photoViewerClose').onclick = () => $('#photoViewer').close();
+
+  // propinas
+  $('#btnTip').onclick = () => $('#tipDialog').showModal();
+  $('#tipCopyBtn').onclick = async () => {
+    try {
+      await navigator.clipboard.writeText('@NEQUIJOS86891');
+      toast(t('tipCopied'));
+    } catch {
+      toast('@NEQUIJOS86891');
+    }
+  };
 
   // respaldo
   $('#btnExport').onclick = exportData;

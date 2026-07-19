@@ -60,6 +60,14 @@ server receiving anything). Then in Safari:
 - Photos are resized to max 1280 px and compressed to JPEG so they don't fill
   up your phone.
 
+## ☕ Support
+
+This app is free and ad-free. If it helps you, you can leave a voluntary tip by
+scanning this QR with your payments app (Bre-B / Nequi), or using the key
+`@NEQUIJOS86891`:
+
+<img src="donate-qr.jpg" alt="Bre-B / Nequi QR — @NEQUIJOS86891" width="260">
+
 ## Structure
 
 | File | What it is |

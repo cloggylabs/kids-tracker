@@ -220,6 +220,23 @@ main { padding: 16px; max-width: 640px; margin: 0 auto; }
   cursor: pointer;
 }
 .seg button.active { background: var(--accent); color: #fff; }
+.tip-cta {
+  font: inherit; font-size: 15px; font-weight: 700;
+  padding: 12px 18px;
+  border: none; border-radius: 12px;
+  background: linear-gradient(135deg, #1baf7a, #2a78d6);
+  color: #fff;
+  cursor: pointer;
+}
+.tip-dialog { display: flex; flex-direction: column; gap: 12px; text-align: center; }
+.tip-dialog[open] { display: flex; }
+.tip-dialog h2 { font-size: 18px; }
+.tip-dialog img {
+  width: 100%; max-width: 320px;
+  align-self: center;
+  border-radius: 12px;
+  background: #fff;
+}
 .profile-line { display: flex; align-items: center; gap: 10px; font-size: 15px; }
 .profile-line .big { font-size: 26px; }
 .profile-line .sub { font-size: 13px; color: var(--text-muted); }

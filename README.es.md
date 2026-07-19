@@ -60,6 +60,14 @@ estática, no hay servidor que reciba nada). Luego en Safari:
 - Las fotos se reducen a máx. 1280 px y se comprimen a JPEG para no llenar el
   teléfono.
 
+## ☕ Apoya el proyecto
+
+Esta app es gratuita y sin anuncios. Si te sirve, puedes dejar una propina
+voluntaria escaneando este QR con tu app de pagos (Bre-B / Nequi), o usando la
+llave `@NEQUIJOS86891`:
+
+<img src="donate-qr.jpg" alt="QR Bre-B / Nequi — @NEQUIJOS86891" width="260">
+
 ## Estructura
 
 | Archivo | Qué es |

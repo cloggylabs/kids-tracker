@@ -1,11 +1,12 @@
 /* Service worker: cachea la app para que funcione sin conexión */
-const CACHE = 'crece-v3';
+const CACHE = 'crece-v4';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './app.js',
   './manifest.webmanifest',
+  './donate-qr.jpg',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',
