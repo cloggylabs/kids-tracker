@@ -14,8 +14,9 @@
   --danger: #d03b3b;
   --fab-shadow: 0 4px 16px rgba(11, 11, 11, 0.22);
 }
+/* Tema oscuro: automático (sistema) o forzado con data-theme="dark" */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --surface-1: #1a1a19;
     --page: #0d0d0d;
     --text-primary: #ffffff;
@@ -29,6 +30,20 @@
     --accent: #3987e5;
     --danger: #e66767;
   }
+}
+:root[data-theme="dark"] {
+  --surface-1: #1a1a19;
+  --page: #0d0d0d;
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #898781;
+  --grid: #2c2c2a;
+  --baseline: #383835;
+  --border: rgba(255, 255, 255, 0.10);
+  --series-weight: #3987e5;
+  --series-height: #199e70;
+  --accent: #3987e5;
+  --danger: #e66767;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -188,6 +203,23 @@ main { padding: 16px; max-width: 640px; margin: 0 auto; }
   cursor: pointer;
 }
 .settings-note { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.pref-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 15px; }
+.seg {
+  display: flex;
+  background: var(--page);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2px;
+}
+.seg button {
+  font: inherit; font-size: 13px; font-weight: 600;
+  border: none; background: none;
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.seg button.active { background: var(--accent); color: #fff; }
 .profile-line { display: flex; align-items: center; gap: 10px; font-size: 15px; }
 .profile-line .big { font-size: 26px; }
 .profile-line .sub { font-size: 13px; color: var(--text-muted); }

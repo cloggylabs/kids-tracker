@@ -68,15 +68,132 @@ const $ = sel => document.querySelector(sel);
 
 const EMOJIS = ['🐣', '🦖', '🚀', '🌟', '🦄', '🐻', '🌸', '⚽', '🎨', '🐬'];
 
+/* ============================ Idioma y tema ============================ */
+
+const I18N = {
+  es: {
+    tabRecords: 'Registros', tabCharts: 'Gráficas', tabPhotos: 'Fotos', tabSettings: 'Ajustes',
+    emptyRegTitle: 'Sin registros todavía',
+    emptyRegBody: 'Toca el botón <strong>+</strong> para agregar el primer peso y talla.',
+    emptyChartsTitle: 'Aún no hay datos que graficar',
+    emptyChartsBody: 'Agrega al menos dos registros para ver el avance.',
+    emptyPhotosTitle: 'Sin fotos todavía',
+    emptyPhotosBody: 'Al agregar un registro puedes incluir una foto del momento.',
+    weight: 'Peso', height: 'Talla', dataTable: 'Tabla de datos',
+    thDate: 'Fecha', thAge: 'Edad', thWeight: 'Peso (kg)', thHeight: 'Talla (cm)',
+    latest: 'Último',
+    profile: 'Perfil', prefs: 'Preferencias', backup: 'Respaldo', storage: 'Almacenamiento',
+    theme: 'Tema', themeAuto: 'Auto', themeLight: 'Claro', themeDark: 'Oscuro',
+    language: 'Idioma',
+    exportBtn: '⬇️ Exportar todos los datos', importBtn: '⬆️ Importar respaldo',
+    backupNote: 'El respaldo incluye todos los perfiles, registros y fotos en un archivo JSON. Guárdalo en iCloud, Archivos o donde prefieras.',
+    localNote: 'Todos los datos viven únicamente en este dispositivo. Nada se envía a internet.',
+    newKid: 'Nuevo peque', editProfile: 'Editar perfil',
+    nameLabel: 'Nombre', namePh: 'p. ej. Sofía', birthLabel: 'Fecha de nacimiento', emojiLabel: 'Emoji',
+    cancel: 'Cancelar', save: 'Guardar', close: 'Cerrar',
+    deleteProfile: 'Eliminar este perfil y sus datos',
+    newEntry: 'Nuevo registro', editEntry: 'Editar registro',
+    dateLabel: 'Fecha', weightLabel: 'Peso (kg)', heightLabel: 'Talla (cm)',
+    photoLabel: 'Foto (opcional)', removePhoto: 'Quitar foto',
+    noteLabel: 'Nota (opcional)', notePh: 'p. ej. control pediátrico',
+    deleteEntryBtn: 'Eliminar este registro',
+    addKid: '+ Agregar',
+    entrySaved: 'Registro guardado ✓', entryDeleted: 'Registro eliminado',
+    profileUpdated: 'Perfil actualizado', profileDeleted: 'Perfil eliminado',
+    kidAdded: n => `¡${n} agregado! 🎉`,
+    needData: 'Agrega al menos un peso, talla o foto',
+    invalidImage: 'No se pudo leer esa imagen',
+    confirmDeleteEntry: '¿Eliminar este registro?',
+    confirmDeleteKid: n => `¿Eliminar el perfil de ${n} y TODOS sus registros y fotos? Esta acción no se puede deshacer.`,
+    preparingBackup: 'Preparando respaldo…',
+    invalidBackup: 'El archivo no es un respaldo válido',
+    confirmImport: (k, e) => `Importar ${k} perfil(es) y ${e} registro(s). Los datos con el mismo identificador se sobrescriben. ¿Continuar?`,
+    backupImported: 'Respaldo importado ✓',
+    storageUsed: mb => `Espacio usado: ${mb} MB.`,
+    storageNA: 'Espacio usado: no disponible.',
+    bornOn: (d, a) => `Nació el ${d} · ${a}`,
+    editProfileBtn: '✏️ Editar perfil',
+    noProfile: 'No hay ningún perfil todavía.',
+  },
+  en: {
+    tabRecords: 'Records', tabCharts: 'Charts', tabPhotos: 'Photos', tabSettings: 'Settings',
+    emptyRegTitle: 'No records yet',
+    emptyRegBody: 'Tap the <strong>+</strong> button to add the first weight and height.',
+    emptyChartsTitle: 'Nothing to chart yet',
+    emptyChartsBody: 'Add at least two records to see the progress.',
+    emptyPhotosTitle: 'No photos yet',
+    emptyPhotosBody: 'When adding a record you can include a photo of the moment.',
+    weight: 'Weight', height: 'Height', dataTable: 'Data table',
+    thDate: 'Date', thAge: 'Age', thWeight: 'Weight (kg)', thHeight: 'Height (cm)',
+    latest: 'Latest',
+    profile: 'Profile', prefs: 'Preferences', backup: 'Backup', storage: 'Storage',
+    theme: 'Theme', themeAuto: 'Auto', themeLight: 'Light', themeDark: 'Dark',
+    language: 'Language',
+    exportBtn: '⬇️ Export all data', importBtn: '⬆️ Import backup',
+    backupNote: 'The backup includes every profile, record, and photo in a single JSON file. Keep it in iCloud, Files, or wherever you prefer.',
+    localNote: 'All data lives only on this device. Nothing is sent to the internet.',
+    newKid: 'New kid', editProfile: 'Edit profile',
+    nameLabel: 'Name', namePh: 'e.g. Sofía', birthLabel: 'Date of birth', emojiLabel: 'Emoji',
+    cancel: 'Cancel', save: 'Save', close: 'Close',
+    deleteProfile: 'Delete this profile and its data',
+    newEntry: 'New record', editEntry: 'Edit record',
+    dateLabel: 'Date', weightLabel: 'Weight (kg)', heightLabel: 'Height (cm)',
+    photoLabel: 'Photo (optional)', removePhoto: 'Remove photo',
+    noteLabel: 'Note (optional)', notePh: 'e.g. pediatric checkup',
+    deleteEntryBtn: 'Delete this record',
+    addKid: '+ Add',
+    entrySaved: 'Record saved ✓', entryDeleted: 'Record deleted',
+    profileUpdated: 'Profile updated', profileDeleted: 'Profile deleted',
+    kidAdded: n => `${n} added! 🎉`,
+    needData: 'Add at least a weight, height, or photo',
+    invalidImage: 'Could not read that image',
+    confirmDeleteEntry: 'Delete this record?',
+    confirmDeleteKid: n => `Delete ${n}'s profile and ALL their records and photos? This cannot be undone.`,
+    preparingBackup: 'Preparing backup…',
+    invalidBackup: 'That file is not a valid backup',
+    confirmImport: (k, e) => `Import ${k} profile(s) and ${e} record(s). Data with the same identifier will be overwritten. Continue?`,
+    backupImported: 'Backup imported ✓',
+    storageUsed: mb => `Space used: ${mb} MB.`,
+    storageNA: 'Space used: not available.',
+    bornOn: (d, a) => `Born ${d} · ${a}`,
+    editProfileBtn: '✏️ Edit profile',
+    noProfile: 'No profile yet.',
+  },
+};
+
+let lang = localStorage.getItem('crece-lang') || 'es';
+let theme = localStorage.getItem('crece-theme') || 'auto';
+
+function t(key, ...args) {
+  const v = I18N[lang][key] ?? I18N.es[key] ?? key;
+  return typeof v === 'function' ? v(...args) : v;
+}
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  document.querySelectorAll('#langSeg button').forEach(b => b.classList.toggle('active', b.dataset.langOpt === lang));
+}
+
+function applyTheme() {
+  if (theme === 'auto') delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = theme;
+  const dark = theme === 'dark' || (theme === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m => { m.content = dark ? '#1a1a19' : '#fcfcfb'; });
+  document.querySelectorAll('#themeSeg button').forEach(b => b.classList.toggle('active', b.dataset.themeOpt === theme));
+}
+
 /* ============================ Utilidades ============================ */
 
 function fmtDate(iso) {
   const [y, m, d] = iso.split('-').map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' });
+  return new Date(y, m - 1, d).toLocaleDateString(lang, { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function fmtDateShort(date) {
-  return date.toLocaleDateString('es', { month: 'short', year: '2-digit' });
+  return date.toLocaleDateString(lang, { month: 'short', year: '2-digit' });
 }
 
 function isoToDate(iso) {
@@ -97,21 +214,30 @@ function ageAt(birthISO, dateISO) {
   if (months < 0) return '—';
   if (months === 0) {
     const days = Math.floor((d - b) / 86400000);
+    if (lang === 'en') return `${days} day${days === 1 ? '' : 's'}`;
     return `${days} día${days === 1 ? '' : 's'}`;
   }
   const y = Math.floor(months / 12);
   const m = months % 12;
+  if (lang === 'en') {
+    if (y === 0) return `${m} month${m === 1 ? '' : 's'}`;
+    if (m === 0) return `${y} year${y === 1 ? '' : 's'}`;
+    return `${y}y ${m}m`;
+  }
   if (y === 0) return `${m} mes${m === 1 ? '' : 'es'}`;
   if (m === 0) return `${y} año${y === 1 ? '' : 's'}`;
   return `${y} a ${m} m`;
 }
 
+/* Acepta coma o punto como separador decimal (el teclado iOS en español usa coma) */
 function num(v) {
-  return (v === null || v === undefined || v === '') ? null : Number(v);
+  if (v === null || v === undefined || String(v).trim() === '') return null;
+  const n = Number(String(v).trim().replace(',', '.'));
+  return Number.isFinite(n) ? n : null;
 }
 
 function fmtNum(v, dec = 1) {
-  return v === null ? '—' : v.toLocaleString('es', { minimumFractionDigits: 0, maximumFractionDigits: dec });
+  return v === null ? '—' : v.toLocaleString(lang, { minimumFractionDigits: 0, maximumFractionDigits: dec });
 }
 
 function toast(msg) {
@@ -186,7 +312,7 @@ function renderKidChips() {
   }
   const add = document.createElement('button');
   add.className = 'kid-chip add';
-  add.textContent = '+ Agregar';
+  add.textContent = t('addKid');
   add.onclick = () => openKidDialog(null);
   box.appendChild(add);
 }
@@ -196,7 +322,7 @@ function openKidDialog(kidId) {
   const kid = kids.find(k => k.id === kidId);
   const form = $('#kidForm');
   form.reset();
-  $('#kidDialogTitle').textContent = kid ? 'Editar perfil' : 'Nuevo peque';
+  $('#kidDialogTitle').textContent = kid ? t('editProfile') : t('newKid');
   $('#kidDeleteBtn').hidden = !kid;
   form.name.value = kid?.name ?? '';
   form.birthdate.value = kid?.birthdate ?? '';
@@ -231,20 +357,20 @@ async function saveKid(form) {
   await putRecord('kids', kid);
   activeKidId = kid.id;
   await refresh();
-  toast(editingKidId ? 'Perfil actualizado' : `¡${kid.name} agregado! 🎉`);
+  toast(editingKidId ? t('profileUpdated') : t('kidAdded', kid.name));
 }
 
 async function deleteKid() {
   const kid = kids.find(k => k.id === editingKidId);
   if (!kid) return;
-  if (!confirm(`¿Eliminar el perfil de ${kid.name} y TODOS sus registros y fotos? Esta acción no se puede deshacer.`)) return;
+  if (!confirm(t('confirmDeleteKid', kid.name))) return;
   const kidEntries = await getEntriesByKid(kid.id);
   for (const e of kidEntries) await deleteRecord('entries', e.id);
   await deleteRecord('kids', kid.id);
   $('#kidDialog').close();
   activeKidId = null;
   await refresh();
-  toast('Perfil eliminado');
+  toast(t('profileDeleted'));
 }
 
 /* ============================ Registros ============================ */
@@ -331,7 +457,7 @@ function openEntryDialog(entryId) {
   const entry = entries.find(e => e.id === entryId);
   const form = $('#entryForm');
   form.reset();
-  $('#entryDialogTitle').textContent = entry ? 'Editar registro' : 'Nuevo registro';
+  $('#entryDialogTitle').textContent = entry ? t('editEntry') : t('newEntry');
   $('#entryDeleteBtn').hidden = !entry;
   form.date.value = entry?.date ?? todayISO();
   form.weight.value = entry?.weight ?? '';
@@ -355,7 +481,7 @@ async function saveEntry(form) {
   const weight = num(form.weight.value);
   const height = num(form.height.value);
   if (weight === null && height === null && !pendingPhotoBlob && !editingEntryId) {
-    toast('Agrega al menos un peso, talla o foto');
+    toast(t('needData'));
     return;
   }
   const existing = entries.find(e => e.id === editingEntryId);
@@ -374,16 +500,16 @@ async function saveEntry(form) {
   };
   await putRecord('entries', entry);
   await refresh();
-  toast('Registro guardado ✓');
+  toast(t('entrySaved'));
 }
 
 async function deleteEntry() {
   if (!editingEntryId) return;
-  if (!confirm('¿Eliminar este registro?')) return;
+  if (!confirm(t('confirmDeleteEntry'))) return;
   await deleteRecord('entries', editingEntryId);
   $('#entryDialog').close();
   await refresh();
-  toast('Registro eliminado');
+  toast(t('entryDeleted'));
 }
 
 /* ============================ Gráficas ============================ */
@@ -400,11 +526,11 @@ function renderCharts() {
 
   const css = getComputedStyle(document.documentElement);
   if (wPoints.length > 0) {
-    $('#weightLatest').textContent = `Último: ${fmtNum(wPoints[wPoints.length - 1].value, 2)} kg`;
+    $('#weightLatest').textContent = `${t('latest')}: ${fmtNum(wPoints[wPoints.length - 1].value, 2)} kg`;
     drawLineChart($('#weightChart'), wPoints, css.getPropertyValue('--series-weight').trim(), 'kg');
   }
   if (hPoints.length > 0) {
-    $('#heightLatest').textContent = `Último: ${fmtNum(hPoints[hPoints.length - 1].value)} cm`;
+    $('#heightLatest').textContent = `${t('latest')}: ${fmtNum(hPoints[hPoints.length - 1].value)} cm`;
     drawLineChart($('#heightChart'), hPoints, css.getPropertyValue('--series-height').trim(), 'cm');
   }
   renderDataTable();
@@ -567,7 +693,7 @@ function renderPhotos() {
     cell.className = 'photo-cell';
     const img = document.createElement('img');
     img.src = blobURL(e.photo);
-    img.alt = `Foto del ${fmtDate(e.date)}`;
+    img.alt = fmtDate(e.date);
     img.loading = 'lazy';
     const cap = document.createElement('div');
     cap.className = 'photo-cap';
@@ -593,17 +719,17 @@ function renderSettings() {
   const card = $('#kidProfileCard');
   const kid = activeKid();
   if (!kid) {
-    card.innerHTML = '<p class="settings-note">No hay ningún perfil todavía.</p>';
+    card.innerHTML = `<p class="settings-note">${t('noProfile')}</p>`;
     return;
   }
   card.innerHTML = '';
   const line = document.createElement('div');
   line.className = 'profile-line';
-  line.innerHTML = `<span class="big">${kid.emoji}</span><span><strong>${kid.name}</strong><br><span class="sub">Nació el ${fmtDate(kid.birthdate)} · ${ageAt(kid.birthdate, todayISO())}</span></span>`;
+  line.innerHTML = `<span class="big">${kid.emoji}</span><span><strong>${kid.name}</strong><br><span class="sub">${t('bornOn', fmtDate(kid.birthdate), ageAt(kid.birthdate, todayISO()))}</span></span>`;
   card.appendChild(line);
   const editBtn = document.createElement('button');
   editBtn.className = 'settings-btn';
-  editBtn.textContent = '✏️ Editar perfil';
+  editBtn.textContent = t('editProfileBtn');
   editBtn.onclick = () => openKidDialog(kid.id);
   card.appendChild(editBtn);
   updateStorageInfo();
@@ -614,9 +740,9 @@ async function updateStorageInfo() {
   try {
     const est = await navigator.storage.estimate();
     const used = (est.usage / 1048576).toFixed(1);
-    el.textContent = `Espacio usado: ${used} MB.`;
+    el.textContent = t('storageUsed', used);
   } catch {
-    el.textContent = 'Espacio usado: no disponible.';
+    el.textContent = t('storageNA');
   }
 }
 
@@ -636,7 +762,7 @@ async function dataURLToBlob(url) {
 }
 
 async function exportData() {
-  toast('Preparando respaldo…');
+  toast(t('preparingBackup'));
   const allKids = await getAll('kids');
   const allEntries = await getAll('entries');
   const out = {
@@ -663,20 +789,20 @@ async function importData(file) {
   try {
     data = JSON.parse(await file.text());
   } catch {
-    toast('El archivo no es un respaldo válido');
+    toast(t('invalidBackup'));
     return;
   }
   if (data.app !== 'crece' || !Array.isArray(data.kids) || !Array.isArray(data.entries)) {
-    toast('El archivo no es un respaldo válido');
+    toast(t('invalidBackup'));
     return;
   }
-  if (!confirm(`Importar ${data.kids.length} perfil(es) y ${data.entries.length} registro(s). Los datos con el mismo identificador se sobrescriben. ¿Continuar?`)) return;
+  if (!confirm(t('confirmImport', data.kids.length, data.entries.length))) return;
   for (const kid of data.kids) await putRecord('kids', kid);
   for (const e of data.entries) {
     await putRecord('entries', { ...e, photo: e.photo ? await dataURLToBlob(e.photo) : null });
   }
   await refresh();
-  toast('Respaldo importado ✓');
+  toast(t('backupImported'));
 }
 
 /* ============================ Navegación y refresco ============================ */
@@ -723,8 +849,32 @@ async function seedDemo() {
 /* ============================ Arranque ============================ */
 
 async function main() {
+  applyTheme();
+  applyLang();
   db = await openDB();
   await refresh();
+
+  // preferencias: tema e idioma
+  document.querySelectorAll('#themeSeg button').forEach(b => {
+    b.onclick = () => {
+      theme = b.dataset.themeOpt;
+      localStorage.setItem('crece-theme', theme);
+      applyTheme();
+      renderCharts(); // las gráficas llevan los colores incrustados en el SVG
+    };
+  });
+  document.querySelectorAll('#langSeg button').forEach(b => {
+    b.onclick = async () => {
+      lang = b.dataset.langOpt;
+      localStorage.setItem('crece-lang', lang);
+      applyLang();
+      await refresh(); // re-renderiza fechas, edades y textos dinámicos
+    };
+  });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    applyTheme();
+    renderCharts();
+  });
 
   // pestañas
   document.querySelectorAll('.tab').forEach(t => {
@@ -753,7 +903,7 @@ async function main() {
       photoRemoved = false;
       updatePhotoPreview(pendingPhotoBlob);
     } catch {
-      toast('No se pudo leer esa imagen');
+      toast(t('invalidImage'));
     }
   });
   $('#photoRemoveBtn').onclick = () => {

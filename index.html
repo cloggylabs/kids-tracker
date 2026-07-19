@@ -32,8 +32,8 @@
   <section class="view" id="view-registros">
     <div class="empty-state" id="emptyRegistros" hidden>
       <div class="empty-icon">📏</div>
-      <h2>Sin registros todavía</h2>
-      <p>Toca el botón <strong>+</strong> para agregar el primer peso y talla.</p>
+      <h2 data-i18n="emptyRegTitle">Sin registros todavía</h2>
+      <p data-i18n-html="emptyRegBody">Toca el botón <strong>+</strong> para agregar el primer peso y talla.</p>
     </div>
     <ul class="entry-list" id="entryList"></ul>
   </section>
@@ -42,28 +42,33 @@
   <section class="view" id="view-graficas" hidden>
     <div class="empty-state" id="emptyGraficas" hidden>
       <div class="empty-icon">📈</div>
-      <h2>Aún no hay datos que graficar</h2>
-      <p>Agrega al menos dos registros para ver el avance.</p>
+      <h2 data-i18n="emptyChartsTitle">Aún no hay datos que graficar</h2>
+      <p data-i18n="emptyChartsBody">Agrega al menos dos registros para ver el avance.</p>
     </div>
     <div class="chart-card" id="weightCard">
       <div class="chart-head">
-        <h2>Peso</h2>
+        <h2 data-i18n="weight">Peso</h2>
         <span class="chart-latest" id="weightLatest"></span>
       </div>
-      <div class="chart-wrap"><svg id="weightChart" role="img" aria-label="Gráfica de peso en kilogramos a lo largo del tiempo"></svg></div>
+      <div class="chart-wrap"><svg id="weightChart" role="img"></svg></div>
     </div>
     <div class="chart-card" id="heightCard">
       <div class="chart-head">
-        <h2>Talla</h2>
+        <h2 data-i18n="height">Talla</h2>
         <span class="chart-latest" id="heightLatest"></span>
       </div>
-      <div class="chart-wrap"><svg id="heightChart" role="img" aria-label="Gráfica de talla en centímetros a lo largo del tiempo"></svg></div>
+      <div class="chart-wrap"><svg id="heightChart" role="img"></svg></div>
     </div>
     <div class="chart-card" id="tableCard">
-      <div class="chart-head"><h2>Tabla de datos</h2></div>
+      <div class="chart-head"><h2 data-i18n="dataTable">Tabla de datos</h2></div>
       <div class="table-wrap">
         <table class="data-table" id="dataTable">
-          <thead><tr><th>Fecha</th><th>Edad</th><th>Peso (kg)</th><th>Talla (cm)</th></tr></thead>
+          <thead><tr>
+            <th data-i18n="thDate">Fecha</th>
+            <th data-i18n="thAge">Edad</th>
+            <th data-i18n="thWeight">Peso (kg)</th>
+            <th data-i18n="thHeight">Talla (cm)</th>
+          </tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -74,8 +79,8 @@
   <section class="view" id="view-fotos" hidden>
     <div class="empty-state" id="emptyFotos" hidden>
       <div class="empty-icon">📷</div>
-      <h2>Sin fotos todavía</h2>
-      <p>Al agregar un registro puedes incluir una foto del momento.</p>
+      <h2 data-i18n="emptyPhotosTitle">Sin fotos todavía</h2>
+      <p data-i18n="emptyPhotosBody">Al agregar un registro puedes incluir una foto del momento.</p>
     </div>
     <div class="photo-grid" id="photoGrid"></div>
   </section>
@@ -83,58 +88,78 @@
   <!-- Vista: Ajustes -->
   <section class="view" id="view-ajustes" hidden>
     <div class="settings-group">
-      <h2>Perfil</h2>
+      <h2 data-i18n="profile">Perfil</h2>
       <div class="settings-card" id="kidProfileCard"></div>
     </div>
     <div class="settings-group">
-      <h2>Respaldo</h2>
+      <h2 data-i18n="prefs">Preferencias</h2>
       <div class="settings-card">
-        <button class="settings-btn" id="btnExport">⬇️ Exportar todos los datos</button>
-        <button class="settings-btn" id="btnImport">⬆️ Importar respaldo</button>
-        <input type="file" id="importFile" accept="application/json,.json" hidden>
-        <p class="settings-note">El respaldo incluye todos los perfiles, registros y fotos en un archivo JSON. Guárdalo en iCloud, Archivos o donde prefieras.</p>
+        <div class="pref-row">
+          <span data-i18n="theme">Tema</span>
+          <div class="seg" id="themeSeg">
+            <button data-theme-opt="auto" data-i18n="themeAuto">Auto</button>
+            <button data-theme-opt="light" data-i18n="themeLight">Claro</button>
+            <button data-theme-opt="dark" data-i18n="themeDark">Oscuro</button>
+          </div>
+        </div>
+        <div class="pref-row">
+          <span data-i18n="language">Idioma</span>
+          <div class="seg" id="langSeg">
+            <button data-lang-opt="es">Español</button>
+            <button data-lang-opt="en">English</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="settings-group">
-      <h2>Almacenamiento</h2>
+      <h2 data-i18n="backup">Respaldo</h2>
       <div class="settings-card">
-        <p class="settings-note" id="storageInfo">Calculando…</p>
-        <p class="settings-note">Todos los datos viven únicamente en este dispositivo. Nada se envía a internet.</p>
+        <button class="settings-btn" id="btnExport" data-i18n="exportBtn">⬇️ Exportar todos los datos</button>
+        <button class="settings-btn" id="btnImport" data-i18n="importBtn">⬆️ Importar respaldo</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+        <p class="settings-note" data-i18n="backupNote">El respaldo incluye todos los perfiles, registros y fotos en un archivo JSON. Guárdalo en iCloud, Archivos o donde prefieras.</p>
+      </div>
+    </div>
+    <div class="settings-group">
+      <h2 data-i18n="storage">Almacenamiento</h2>
+      <div class="settings-card">
+        <p class="settings-note" id="storageInfo"></p>
+        <p class="settings-note" data-i18n="localNote">Todos los datos viven únicamente en este dispositivo. Nada se envía a internet.</p>
       </div>
     </div>
   </section>
 
 </main>
 
-<button class="fab" id="fabAdd" aria-label="Agregar registro">+</button>
+<button class="fab" id="fabAdd" aria-label="+">+</button>
 
 <nav class="tab-bar">
-  <button class="tab active" data-view="registros"><span class="tab-icon">📋</span><span>Registros</span></button>
-  <button class="tab" data-view="graficas"><span class="tab-icon">📈</span><span>Gráficas</span></button>
-  <button class="tab" data-view="fotos"><span class="tab-icon">📷</span><span>Fotos</span></button>
-  <button class="tab" data-view="ajustes"><span class="tab-icon">⚙️</span><span>Ajustes</span></button>
+  <button class="tab active" data-view="registros"><span class="tab-icon">📋</span><span data-i18n="tabRecords">Registros</span></button>
+  <button class="tab" data-view="graficas"><span class="tab-icon">📈</span><span data-i18n="tabCharts">Gráficas</span></button>
+  <button class="tab" data-view="fotos"><span class="tab-icon">📷</span><span data-i18n="tabPhotos">Fotos</span></button>
+  <button class="tab" data-view="ajustes"><span class="tab-icon">⚙️</span><span data-i18n="tabSettings">Ajustes</span></button>
 </nav>
 
 <!-- Diálogo: agregar/editar niño -->
 <dialog id="kidDialog">
   <form method="dialog" class="dialog-form" id="kidForm">
     <h2 id="kidDialogTitle">Nuevo peque</h2>
-    <label>Nombre
-      <input type="text" name="name" required autocomplete="off" placeholder="p. ej. Sofía">
+    <label><span data-i18n="nameLabel">Nombre</span>
+      <input type="text" name="name" required autocomplete="off" data-i18n-ph="namePh" placeholder="p. ej. Sofía">
     </label>
-    <label>Fecha de nacimiento
+    <label><span data-i18n="birthLabel">Fecha de nacimiento</span>
       <input type="date" name="birthdate" required>
     </label>
     <div class="field">
-      <span class="field-label">Emoji</span>
+      <span data-i18n="emojiLabel">Emoji</span>
       <div class="emoji-row" id="emojiRow"></div>
       <input type="hidden" name="emoji" value="🐣">
     </div>
     <div class="dialog-actions">
-      <button type="button" class="btn ghost" data-close>Cancelar</button>
-      <button type="submit" class="btn primary" id="kidSaveBtn">Guardar</button>
+      <button type="button" class="btn ghost" data-close data-i18n="cancel">Cancelar</button>
+      <button type="submit" class="btn primary" id="kidSaveBtn" data-i18n="save">Guardar</button>
     </div>
-    <button type="button" class="btn danger-link" id="kidDeleteBtn" hidden>Eliminar este perfil y sus datos</button>
+    <button type="button" class="btn danger-link" id="kidDeleteBtn" data-i18n="deleteProfile" hidden>Eliminar este perfil y sus datos</button>
   </form>
 </dialog>
 
@@ -142,40 +167,40 @@
 <dialog id="entryDialog">
   <form method="dialog" class="dialog-form" id="entryForm">
     <h2 id="entryDialogTitle">Nuevo registro</h2>
-    <label>Fecha
+    <label><span data-i18n="dateLabel">Fecha</span>
       <input type="date" name="date" required>
     </label>
     <div class="field-row">
-      <label>Peso (kg)
-        <input type="number" name="weight" step="0.01" min="0" max="200" inputmode="decimal" placeholder="12.4">
+      <label><span data-i18n="weightLabel">Peso (kg)</span>
+        <input type="text" name="weight" inputmode="decimal" autocomplete="off" placeholder="12.4">
       </label>
-      <label>Talla (cm)
-        <input type="number" name="height" step="0.1" min="0" max="250" inputmode="decimal" placeholder="86.5">
+      <label><span data-i18n="heightLabel">Talla (cm)</span>
+        <input type="text" name="height" inputmode="decimal" autocomplete="off" placeholder="86.5">
       </label>
     </div>
-    <label>Foto (opcional)
+    <label><span data-i18n="photoLabel">Foto (opcional)</span>
       <input type="file" name="photo" accept="image/*">
     </label>
     <div class="photo-preview" id="photoPreview" hidden>
-      <img id="photoPreviewImg" alt="Vista previa de la foto">
-      <button type="button" class="btn ghost small" id="photoRemoveBtn">Quitar foto</button>
+      <img id="photoPreviewImg" alt="">
+      <button type="button" class="btn ghost small" id="photoRemoveBtn" data-i18n="removePhoto">Quitar foto</button>
     </div>
-    <label>Nota (opcional)
-      <input type="text" name="note" autocomplete="off" placeholder="p. ej. control pediátrico">
+    <label><span data-i18n="noteLabel">Nota (opcional)</span>
+      <input type="text" name="note" autocomplete="off" data-i18n-ph="notePh" placeholder="p. ej. control pediátrico">
     </label>
     <div class="dialog-actions">
-      <button type="button" class="btn ghost" data-close>Cancelar</button>
-      <button type="submit" class="btn primary">Guardar</button>
+      <button type="button" class="btn ghost" data-close data-i18n="cancel">Cancelar</button>
+      <button type="submit" class="btn primary" data-i18n="save">Guardar</button>
     </div>
-    <button type="button" class="btn danger-link" id="entryDeleteBtn" hidden>Eliminar este registro</button>
+    <button type="button" class="btn danger-link" id="entryDeleteBtn" data-i18n="deleteEntryBtn" hidden>Eliminar este registro</button>
   </form>
 </dialog>
 
 <!-- Visor de foto -->
 <dialog id="photoViewer" class="photo-viewer">
-  <img id="photoViewerImg" alt="Foto ampliada">
+  <img id="photoViewerImg" alt="">
   <p id="photoViewerCaption"></p>
-  <button class="btn ghost" id="photoViewerClose">Cerrar</button>
+  <button class="btn ghost" id="photoViewerClose" data-i18n="close">Cerrar</button>
 </dialog>
 
 <div class="chart-tooltip" id="chartTooltip" hidden></div>
