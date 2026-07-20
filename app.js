@@ -121,9 +121,12 @@ const I18N = {
     tipNote: 'Esta app es gratuita y sin anuncios. Si te sirve, puedes apoyarme con una propina voluntaria.',
     tipBtn: '☕ Invítame un café',
     tipTitle: '¡Gracias por tu apoyo! ☕',
-    tipScan: 'Escanea el código con tu app de pagos (Bre-B / Nequi):',
+    tipScan: 'Escanea el código con tu app de pagos:',
     tipCopy: 'Copiar llave @NEQUIJOS86891',
     tipCopied: 'Llave copiada ✓',
+    tipOr: 'o',
+    tipWorldLabel: 'Resto del mundo — PayPal',
+    tipPaypal: 'Donar con PayPal',
   },
   en: {
     tabRecords: 'Records', tabCharts: 'Charts', tabPhotos: 'Photos', tabSettings: 'Settings',
@@ -175,9 +178,12 @@ const I18N = {
     tipNote: 'This app is free and ad-free. If it helps you, you can support me with a voluntary tip.',
     tipBtn: '☕ Buy me a coffee',
     tipTitle: 'Thanks for your support! ☕',
-    tipScan: 'Scan the code with your payments app (Bre-B / Nequi):',
+    tipScan: 'Scan the code with your payments app:',
     tipCopy: 'Copy key @NEQUIJOS86891',
     tipCopied: 'Key copied ✓',
+    tipOr: 'or',
+    tipWorldLabel: 'Rest of the world — PayPal',
+    tipPaypal: 'Donate via PayPal',
   },
 };
 

@@ -232,10 +232,31 @@ main { padding: 16px; max-width: 640px; margin: 0 auto; }
 .tip-dialog[open] { display: flex; flex-direction: column; gap: 12px; }
 .tip-dialog h2 { font-size: 18px; }
 .tip-dialog img {
-  width: 100%; max-width: 320px;
+  width: 100%; max-width: 260px;
   align-self: center;
   border-radius: 12px;
   background: #fff;
+}
+.tip-region {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+.tip-or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+  margin: 4px 0;
+}
+.tip-or::before, .tip-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
 }
 .profile-line { display: flex; align-items: center; gap: 10px; font-size: 15px; }
 .profile-line .big { font-size: 26px; }
