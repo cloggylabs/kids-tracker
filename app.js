@@ -73,6 +73,9 @@ const EMOJIS = ['🐣', '🦖', '🚀', '🌟', '🦄', '🐻', '🌸', '⚽', '
 const I18N = {
   es: {
     tabRecords: 'Registros', tabCharts: 'Gráficas', tabPhotos: 'Fotos', tabSettings: 'Ajustes',
+    emptyKidsTitle: '¡Bienvenido a Crece!',
+    emptyKidsBody: 'Agrega el primer perfil para empezar a registrar el crecimiento.',
+    emptyKidsBtn: 'Agregar perfil',
     emptyRegTitle: 'Sin registros todavía',
     emptyRegBody: 'Toca el botón <strong>+</strong> para agregar el primer peso y talla.',
     emptyChartsTitle: 'Aún no hay datos que graficar',
@@ -124,6 +127,9 @@ const I18N = {
   },
   en: {
     tabRecords: 'Records', tabCharts: 'Charts', tabPhotos: 'Photos', tabSettings: 'Settings',
+    emptyKidsTitle: 'Welcome to Crece!',
+    emptyKidsBody: 'Add the first profile to start tracking growth.',
+    emptyKidsBtn: 'Add profile',
     emptyRegTitle: 'No records yet',
     emptyRegBody: 'Tap the <strong>+</strong> button to add the first weight and height.',
     emptyChartsTitle: 'Nothing to chart yet',
@@ -396,7 +402,8 @@ async function loadEntries() {
 function renderEntryList() {
   const list = $('#entryList');
   list.innerHTML = '';
-  $('#emptyRegistros').hidden = entries.length > 0 || !activeKidId;
+  $('#emptyKids').hidden = kids.length > 0;
+  $('#emptyRegistros').hidden = entries.length > 0 || !activeKidId || kids.length === 0;
   const kid = activeKid();
   const desc = [...entries].reverse(); // más reciente primero
   desc.forEach((e, i) => {
@@ -479,6 +486,9 @@ function openEntryDialog(entryId) {
   form.note.value = entry?.note ?? '';
   updatePhotoPreview(entry?.photo ?? null);
   $('#entryDialog').showModal();
+  // Prevent the date input from auto-opening the native picker on mobile
+  // by shifting initial focus to the weight field (date is already pre-filled)
+  requestAnimationFrame(() => form.weight.focus());
 }
 
 function updatePhotoPreview(blob) {
@@ -961,9 +971,6 @@ async function main() {
     if (kids.length === 0) { await seedDemo(); await refresh(); }
     const demoView = location.hash.split('/')[1];
     if (demoView) switchView(demoView);
-  } else if (kids.length === 0) {
-    // primer uso: pedir el primer perfil
-    openKidDialog(null);
   }
 
   // pedir almacenamiento persistente (evita que iOS borre los datos)

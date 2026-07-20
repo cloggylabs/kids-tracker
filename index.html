@@ -30,6 +30,12 @@
 
   <!-- Vista: Registros -->
   <section class="view" id="view-registros">
+    <div class="empty-state" id="emptyKids" hidden>
+      <div class="empty-icon">🐣</div>
+      <h2 data-i18n="emptyKidsTitle">¡Bienvenido a Crece!</h2>
+      <p data-i18n="emptyKidsBody">Agrega el primer perfil para empezar a registrar el crecimiento.</p>
+      <button class="btn primary" onclick="openKidDialog(null)" data-i18n="emptyKidsBtn">Agregar perfil</button>
+    </div>
     <div class="empty-state" id="emptyRegistros" hidden>
       <div class="empty-icon">📏</div>
       <h2 data-i18n="emptyRegTitle">Sin registros todavía</h2>
