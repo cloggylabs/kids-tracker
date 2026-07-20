@@ -492,9 +492,9 @@ function openEntryDialog(entryId) {
   form.note.value = entry?.note ?? '';
   updatePhotoPreview(entry?.photo ?? null);
   $('#entryDialog').showModal();
-  // Prevent the date input from auto-opening the native picker on mobile
-  // by shifting initial focus to the weight field (date is already pre-filled)
-  requestAnimationFrame(() => form.weight.focus());
+  // Focus the title synchronously so the date picker never opens on mobile
+  // (requestAnimationFrame would run after the first paint, causing a flicker)
+  $('#entryDialogTitle').focus();
 }
 
 function updatePhotoPreview(blob) {
