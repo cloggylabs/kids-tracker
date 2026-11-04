@@ -127,6 +127,21 @@ const I18N = {
     tipOr: 'o',
     tipWorldLabel: 'Resto del mundo — PayPal',
     tipPaypal: 'Donar con PayPal',
+    sexLabel: 'Sexo', girl: 'Niña', boy: 'Niño',
+    sexHint: 'Se usa para calcular los percentiles con las curvas de la OMS.',
+    pctTitle: 'Percentiles (OMS)',
+    pctWeight: 'Peso para la edad', pctHeight: 'Talla para la edad',
+    pctNeedSex: 'Indica en el perfil si es niña o niño para calcular en qué percentil está.',
+    pctNeedSexBtn: 'Completar perfil',
+    pctNoRefWeight: 'La OMS no tiene referencia de peso para la edad después de los 10 años.',
+    pctNoRefHeight: 'Fuera del rango de referencia de la OMS (0 a 19 años).',
+    pctBands: ['Por debajo del P3', 'Entre P3 y P15', 'Entre P15 y P50', 'Entre P50 y P85', 'Entre P85 y P97', 'Por encima del P97'],
+    pctUp: 'Subió de percentil', pctDown: 'Bajó de percentil', pctStable: 'Se mantiene en su curva',
+    pctVsPrev: d => `respecto al registro del ${d}`,
+    pctHistory: 'Historial',
+    pctOnlyOne: 'Agrega otro registro para ver cómo cambia el percentil.',
+    pctAlert: 'Está fuera del rango P3–P97. Vale la pena comentarlo con tu pediatra.',
+    pctNote: 'Curvas OMS: Patrones de Crecimiento (0–5 años) y Referencia 2007 (5–19 años). Se marca un cambio de percentil cuando el puntaje z varía 0,67 o más (más o menos cruzar una línea principal de la curva). Es una guía informativa y no reemplaza la valoración del pediatra; en bebés prematuros se usa la edad corregida, que la app no calcula.',
   },
   en: {
     tabRecords: 'Records', tabCharts: 'Charts', tabPhotos: 'Photos', tabSettings: 'Settings',
@@ -184,6 +199,21 @@ const I18N = {
     tipOr: 'or',
     tipWorldLabel: 'Rest of the world — PayPal',
     tipPaypal: 'Donate via PayPal',
+    sexLabel: 'Sex', girl: 'Girl', boy: 'Boy',
+    sexHint: 'Used to calculate percentiles with the WHO growth charts.',
+    pctTitle: 'Percentiles (WHO)',
+    pctWeight: 'Weight-for-age', pctHeight: 'Height-for-age',
+    pctNeedSex: 'Set girl or boy in the profile to see which percentile they are on.',
+    pctNeedSexBtn: 'Complete profile',
+    pctNoRefWeight: 'The WHO has no weight-for-age reference after age 10.',
+    pctNoRefHeight: 'Outside the WHO reference range (0 to 19 years).',
+    pctBands: ['Below P3', 'Between P3 and P15', 'Between P15 and P50', 'Between P50 and P85', 'Between P85 and P97', 'Above P97'],
+    pctUp: 'Moved up a percentile', pctDown: 'Moved down a percentile', pctStable: 'Staying on their curve',
+    pctVsPrev: d => `compared with the record from ${d}`,
+    pctHistory: 'History',
+    pctOnlyOne: 'Add another record to see how the percentile changes.',
+    pctAlert: 'Outside the P3–P97 range. Worth mentioning to your pediatrician.',
+    pctNote: 'WHO curves: Child Growth Standards (0–5 years) and 2007 Growth Reference (5–19 years). A percentile change is flagged when the z-score moves by 0.67 or more (roughly crossing one main curve line). This is for guidance only and does not replace your pediatrician\'s assessment; premature babies use corrected age, which the app does not calculate.',
   },
 };
 
@@ -354,6 +384,7 @@ function openKidDialog(kidId) {
   form.birthdate.value = kid?.birthdate ?? '';
   form.emoji.value = kid?.emoji ?? EMOJIS[0];
   renderEmojiRow(form.emoji.value);
+  setSexSeg(kid?.sex ?? '');
   $('#kidDialog').showModal();
 }
 
@@ -373,12 +404,18 @@ function renderEmojiRow(selected) {
   }
 }
 
+function setSexSeg(sex) {
+  $('#kidForm').sex.value = sex;
+  document.querySelectorAll('#sexSeg button').forEach(b => b.classList.toggle('active', b.dataset.sex === sex));
+}
+
 async function saveKid(form) {
   const kid = {
     id: editingKidId ?? crypto.randomUUID(),
     name: form.name.value.trim(),
     birthdate: form.birthdate.value,
     emoji: form.emoji.value,
+    sex: form.sex.value || null,
   };
   await putRecord('kids', kid);
   activeKidId = kid.id;
@@ -544,25 +581,124 @@ async function deleteEntry() {
 
 /* ============================ Gráficas ============================ */
 
+/* ---------- Percentiles OMS ---------- */
+
+/* z y percentil de una medida; null si falta el sexo o no hay referencia para esa edad */
+function measurePct(kid, iso, indicator, value) {
+  if (!kid?.sex || value === null || value === undefined) return null;
+  const z = whoZ(indicator, kid.sex, ageMonths(kid.birthdate, iso), value);
+  return z === null ? null : { z, p: zToPercentile(z) };
+}
+
+function fmtPct(p) {
+  if (p < 0.1) return '<P0.1';
+  if (p > 99.9) return '>P99.9';
+  if (p < 1 || p > 99) return `P${fmtNum(p, 1)}`;
+  return `P${Math.round(p)}`;
+}
+
+/* Canal entre las líneas de percentil de la cartilla: 0 = <P3 … 5 = >P97 */
+function pctBand(z) {
+  const i = WHO_CURVES.findIndex(c => z < c.z);
+  return i === -1 ? WHO_CURVES.length : i;
+}
+
+function pointsFor(indicator) {
+  const kid = activeKid();
+  return entries.filter(e => e[indicator] !== null).map(e => ({
+    date: isoToDate(e.date), iso: e.date, value: e[indicator],
+    pct: measurePct(kid, e.date, indicator, e[indicator]),
+  }));
+}
+
+function renderPercentiles(wPoints, hPoints) {
+  const body = $('#pctBody');
+  const kid = activeKid();
+  body.innerHTML = '';
+  if (!kid?.sex) {
+    const p = document.createElement('p');
+    p.className = 'settings-note';
+    p.textContent = t('pctNeedSex');
+    const btn = document.createElement('button');
+    btn.className = 'settings-btn';
+    btn.textContent = t('pctNeedSexBtn');
+    btn.onclick = () => openKidDialog(kid.id);
+    body.append(p, btn);
+    return;
+  }
+  const rows = [
+    { indicator: 'weight', cls: 'w', label: t('pctWeight'), points: wPoints, noRef: t('pctNoRefWeight') },
+    { indicator: 'height', cls: 'h', label: t('pctHeight'), points: hPoints, noRef: t('pctNoRefHeight') },
+  ];
+  for (const r of rows) {
+    if (r.points.length === 0) continue;
+    const row = document.createElement('div');
+    row.className = 'pct-row';
+    const head = `<div class="pct-head"><span class="dot ${r.cls}"></span><span>${r.label}</span>`;
+    const last = r.points[r.points.length - 1];
+    if (!last.pct) {
+      row.innerHTML = `${head}</div><p class="pct-sub">${r.noRef}</p>`;
+      body.appendChild(row);
+      continue;
+    }
+    const valid = r.points.filter(p => p.pct);
+    const z = last.pct.z;
+    let html = `${head}<strong class="pct-big">${fmtPct(last.pct.p)}</strong></div>`;
+    html += `<p class="pct-sub">${t('pctBands')[pctBand(z)]} · z ${fmtSigned(z)} · ${fmtDate(last.iso)}</p>`;
+
+    if (valid.length >= 2) {
+      const prev = valid[valid.length - 2];
+      const dz = z - prev.pct.z;
+      const dir = dz >= 0.67 ? 'up' : dz <= -0.67 ? 'down' : 'stable';
+      const icon = { up: '↑', down: '↓', stable: '→' }[dir];
+      const label = t({ up: 'pctUp', down: 'pctDown', stable: 'pctStable' }[dir]);
+      html += `<p class="pct-trend ${dir}"><span class="pct-icon">${icon}</span><span><strong>${label}</strong>: ${fmtPct(prev.pct.p)} → ${fmtPct(last.pct.p)}<br><span class="pct-muted">${t('pctVsPrev', fmtDate(prev.iso))}</span></span></p>`;
+      const hist = valid.slice(-8).map(p => fmtPct(p.pct.p)).join(' → ');
+      html += `<p class="pct-sub">${t('pctHistory')}: ${valid.length > 8 ? '… → ' : ''}${hist}</p>`;
+    } else {
+      html += `<p class="pct-sub">${t('pctOnlyOne')}</p>`;
+    }
+    if (Math.abs(z) > WHO_CURVES[WHO_CURVES.length - 1].z) {
+      html += `<p class="pct-alert">${t('pctAlert')}</p>`;
+    }
+    row.innerHTML = html;
+    body.appendChild(row);
+  }
+  const note = document.createElement('p');
+  note.className = 'pct-note';
+  note.textContent = t('pctNote');
+  body.appendChild(note);
+}
+
+function fmtSigned(v) {
+  const s = fmtNum(Math.abs(v), 2);
+  return v < 0 ? `−${s}` : `+${s}`;
+}
+
 function renderCharts() {
-  const wPoints = entries.filter(e => e.weight !== null).map(e => ({ date: isoToDate(e.date), iso: e.date, value: e.weight }));
-  const hPoints = entries.filter(e => e.height !== null).map(e => ({ date: isoToDate(e.date), iso: e.date, value: e.height }));
+  const kid = activeKid();
+  const wPoints = pointsFor('weight');
+  const hPoints = pointsFor('height');
   const hasData = wPoints.length > 0 || hPoints.length > 0;
 
   $('#emptyGraficas').hidden = hasData;
+  $('#pctCard').hidden = !hasData;
   $('#weightCard').hidden = wPoints.length === 0;
   $('#heightCard').hidden = hPoints.length === 0;
   $('#tableCard').hidden = entries.length === 0;
 
   const css = getComputedStyle(document.documentElement);
+  const ref = indicator => (kid?.sex ? { indicator, sex: kid.sex, birth: kid.birthdate } : null);
+  const latest = (p, dec, unit) => `${t('latest')}: ${fmtNum(p.value, dec)} ${unit}${p.pct ? ` · ${fmtPct(p.pct.p)}` : ''}`;
   if (wPoints.length > 0) {
-    $('#weightLatest').textContent = `${t('latest')}: ${fmtNum(wPoints[wPoints.length - 1].value, 2)} kg`;
-    drawLineChart($('#weightChart'), wPoints, css.getPropertyValue('--series-weight').trim(), 'kg');
+    $('#weightLatest').textContent = latest(wPoints[wPoints.length - 1], 2, 'kg');
+    drawLineChart($('#weightChart'), wPoints, css.getPropertyValue('--series-weight').trim(), 'kg', ref('weight'));
   }
   if (hPoints.length > 0) {
-    $('#heightLatest').textContent = `${t('latest')}: ${fmtNum(hPoints[hPoints.length - 1].value)} cm`;
-    drawLineChart($('#heightChart'), hPoints, css.getPropertyValue('--series-height').trim(), 'cm');
+    $('#heightLatest').textContent = latest(hPoints[hPoints.length - 1], 1, 'cm');
+    drawLineChart($('#heightChart'), hPoints, css.getPropertyValue('--series-height').trim(), 'cm', ref('height'));
   }
+  if (hasData) renderPercentiles(wPoints, hPoints);
   renderDataTable();
 }
 
@@ -580,9 +716,10 @@ function niceTicks(min, max, count = 4) {
   return { ticks, lo, hi };
 }
 
-function drawLineChart(svg, points, color, unit) {
+/* ref (opcional): { indicator, sex, birth } para dibujar las curvas de percentiles OMS */
+function drawLineChart(svg, points, color, unit, ref = null) {
   const W = 600, H = 250;
-  const M = { top: 18, right: 20, bottom: 32, left: 44 };
+  const M = { top: 18, right: ref ? 40 : 20, bottom: 32, left: 44 };
   const iw = W - M.left - M.right;
   const ih = H - M.top - M.bottom;
 
@@ -593,10 +730,32 @@ function drawLineChart(svg, points, color, unit) {
   const surface = css.getPropertyValue('--surface-1').trim();
   const inkColor = css.getPropertyValue('--text-secondary').trim();
 
-  const t0 = points[0].date.getTime();
-  const t1 = points[points.length - 1].date.getTime();
+  let t0 = points[0].date.getTime();
+  let t1 = points[points.length - 1].date.getTime();
+  let curves = [];
+  if (ref) {
+    // con pocas fechas se abre la ventana a 3 meses para que las curvas se lean
+    const DAY = 86400000, minSpan = 90 * DAY;
+    const birthT = isoToDate(ref.birth).getTime();
+    if (t1 - t0 < minSpan) {
+      const extra = minSpan - (t1 - t0);
+      t0 -= extra / 2;
+      t1 += extra / 2;
+      if (t0 < birthT) { t1 += birthT - t0; t0 = birthT; }
+    }
+    const N = 60;
+    curves = WHO_CURVES.map(c => {
+      const pts = [];
+      for (let i = 0; i <= N; i++) {
+        const tt = t0 + ((t1 - t0) * i) / N;
+        const v = whoValueAt(ref.indicator, ref.sex, (tt - birthT) / DAY / 30.4375, c.z);
+        if (v !== null) pts.push({ t: tt, v });
+      }
+      return { ...c, pts };
+    }).filter(c => c.pts.length > 1);
+  }
   const tSpan = Math.max(t1 - t0, 86400000);
-  const vals = points.map(p => p.value);
+  const vals = points.map(p => p.value).concat(curves.flatMap(c => c.pts.map(p => p.v)));
   const vMin = Math.min(...vals);
   const vMax = Math.max(...vals);
   const pad = Math.max((vMax - vMin) * 0.12, vMax * 0.02, 0.5);
@@ -627,6 +786,24 @@ function drawLineChart(svg, points, color, unit) {
     seen.add(label);
     const anchor = i === 0 ? 'start' : i === points.length - 1 ? 'end' : 'middle';
     el += `<text x="${x(p.date.getTime())}" y="${H - 10}" text-anchor="${anchor}" font-size="12" fill="${mutedColor}" font-family="system-ui,sans-serif">${label}</text>`;
+  }
+
+  // curvas OMS: banda P3–P97, banda P15–P85, líneas y etiqueta a la derecha
+  if (curves.length === WHO_CURVES.length) {
+    const path = pts => pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(p.t).toFixed(1)} ${y(p.v).toFixed(1)}`).join(' ');
+    const band = (lo, hi) => `${path(hi.pts)} ${path([...lo.pts].reverse()).replace(/^M/, 'L')} Z`;
+    el += `<path d="${band(curves[0], curves[4])}" fill="${color}" fill-opacity="0.07"/>`;
+    el += `<path d="${band(curves[1], curves[3])}" fill="${color}" fill-opacity="0.09"/>`;
+    let lastLabelY = -Infinity;
+    for (const c of [...curves].reverse()) { // de arriba (P97) hacia abajo
+      const isMedian = c.p === 50;
+      el += `<path d="${path(c.pts)}" fill="none" stroke="${color}" stroke-opacity="${isMedian ? 0.55 : 0.3}" stroke-width="1"${isMedian ? ' stroke-dasharray="4 3"' : ''} vector-effect="non-scaling-stroke"/>`;
+      const end = c.pts[c.pts.length - 1];
+      // si dos etiquetas se enciman, la de abajo se corre lo justo para leerse
+      const ly = Math.max(y(end.v), lastLabelY + 11);
+      el += `<text x="${W - M.right + 5}" y="${ly + 3.5}" font-size="10.5" fill="${mutedColor}" font-family="system-ui,sans-serif">P${c.p}</text>`;
+      lastLabelY = ly;
+    }
   }
 
   // línea de datos
@@ -682,7 +859,7 @@ function attachTooltip(svg, points, scale) {
     crosshair.setAttribute('x1', scale.x(p.date.getTime()));
     crosshair.setAttribute('x2', scale.x(p.date.getTime()));
     crosshair.setAttribute('visibility', 'visible');
-    tooltip.innerHTML = `<strong>${fmtNum(p.value, 2)} ${scale.unit}</strong><br>${fmtDate(p.iso)}${kid ? ` · ${ageAt(kid.birthdate, p.iso)}` : ''}`;
+    tooltip.innerHTML = `<strong>${fmtNum(p.value, 2)} ${scale.unit}</strong>${p.pct ? ` · ${fmtPct(p.pct.p)}` : ''}<br>${fmtDate(p.iso)}${kid ? ` · ${ageAt(kid.birthdate, p.iso)}` : ''}`;
     tooltip.style.left = `${sx}px`;
     tooltip.style.top = `${sy}px`;
     tooltip.hidden = false;
@@ -703,9 +880,13 @@ function renderDataTable() {
   const tbody = $('#dataTable tbody');
   tbody.innerHTML = '';
   const kid = activeKid();
+  const cell = (e, indicator, dec) => {
+    const pct = measurePct(kid, e.date, indicator, e[indicator]);
+    return `<td>${fmtNum(e[indicator], dec)}${pct ? `<span class="td-pct">${fmtPct(pct.p)}</span>` : ''}</td>`;
+  };
   for (const e of [...entries].reverse()) {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${fmtDate(e.date)}</td><td>${kid ? ageAt(kid.birthdate, e.date) : '—'}</td><td>${fmtNum(e.weight, 2)}</td><td>${fmtNum(e.height)}</td>`;
+    tr.innerHTML = `<td>${fmtDate(e.date)}</td><td>${kid ? ageAt(kid.birthdate, e.date) : '—'}</td>${cell(e, 'weight', 2)}${cell(e, 'height', 1)}`;
     tbody.appendChild(tr);
   }
 }
@@ -860,7 +1041,7 @@ async function refresh() {
 /* ============================ Demo ============================ */
 
 async function seedDemo() {
-  const kid = { id: 'demo-kid', name: 'Sofía', birthdate: '2024-03-10', emoji: '🌸' };
+  const kid = { id: 'demo-kid', name: 'Sofía', birthdate: '2024-03-10', emoji: '🌸', sex: 'f' };
   await putRecord('kids', kid);
   const demo = [
     ['2024-03-10', 3.2, 50, 'nacimiento'],
@@ -921,6 +1102,9 @@ async function main() {
     if (ev.submitter?.id === 'kidSaveBtn') saveKid(ev.target);
   });
   $('#kidDeleteBtn').onclick = deleteKid;
+  document.querySelectorAll('#sexSeg button').forEach(b => {
+    b.onclick = () => setSexSeg(b.dataset.sex);
+  });
 
   // diálogo de registro
   $('#entryForm').addEventListener('submit', ev => {

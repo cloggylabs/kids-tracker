@@ -15,6 +15,9 @@ server.
 - Weight and height entries with date, note, and optional photo; each entry
   shows the kid's age at that moment and the change since the previous entry.
 - Weight and height charts over time, with touch tooltips and a data table.
+- WHO percentiles: shows which percentile weight and height are on for the
+  child's age and sex, draws the P3–P97 curves on the charts, and flags when
+  the child moves up or down a percentile between records.
   Automatic light and dark mode.
 - Photo gallery ordered by age.
 - Backup: export/import everything (profiles, entries, and photos) as a single
@@ -74,7 +77,8 @@ scanning this QR with your payments app (Bre-B / Nequi), or using the key
 |---|---|
 | `index.html` | App structure (views, dialogs) |
 | `styles.css` | Styles, light/dark color tokens |
-| `app.js` | Logic: IndexedDB, entries, SVG charts, backup |
+| `app.js` | Logic: IndexedDB, entries, SVG charts, percentiles, backup |
+| `who.js` | WHO LMS tables (2006 and 2007) and z-score / percentile math |
 | `sw.js` | Service worker (cache for offline use) |
 | `manifest.webmanifest` | PWA manifest (name, icons, standalone) |
 | `icons/` | App icons |

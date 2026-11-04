@@ -1,10 +1,11 @@
 /* Service worker: cachea la app para que funcione sin conexión */
-const CACHE = 'crece-v6';
+const CACHE = 'crece-v7';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './app.js',
+  './who.js',
   './manifest.webmanifest',
   './donate-qr.jpg',
   './icons/icon-192.png',

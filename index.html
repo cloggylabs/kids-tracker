@@ -51,6 +51,10 @@
       <h2 data-i18n="emptyChartsTitle">Aún no hay datos que graficar</h2>
       <p data-i18n="emptyChartsBody">Agrega al menos dos registros para ver el avance.</p>
     </div>
+    <div class="chart-card" id="pctCard">
+      <div class="chart-head"><h2 data-i18n="pctTitle">Percentiles (OMS)</h2></div>
+      <div class="pct-body" id="pctBody"></div>
+    </div>
     <div class="chart-card" id="weightCard">
       <div class="chart-head">
         <h2 data-i18n="weight">Peso</h2>
@@ -165,6 +169,15 @@
       <input type="date" name="birthdate" required>
     </label>
     <div class="field">
+      <span data-i18n="sexLabel">Sexo</span>
+      <div class="seg sex-seg" id="sexSeg">
+        <button type="button" data-sex="f" data-i18n="girl">Niña</button>
+        <button type="button" data-sex="m" data-i18n="boy">Niño</button>
+      </div>
+      <input type="hidden" name="sex" value="">
+      <span class="field-hint" data-i18n="sexHint">Se usa para calcular los percentiles con las curvas de la OMS.</span>
+    </div>
+    <div class="field">
       <span data-i18n="emojiLabel">Emoji</span>
       <div class="emoji-row" id="emojiRow"></div>
       <input type="hidden" name="emoji" value="🐣">
@@ -237,6 +250,7 @@
 <div class="chart-tooltip" id="chartTooltip" hidden></div>
 <div class="toast" id="toast" hidden></div>
 
+<script src="who.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
