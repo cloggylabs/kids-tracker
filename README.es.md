@@ -16,6 +16,9 @@ envía a ningún servidor.
   cada registro y el cambio respecto al registro anterior.
 - Gráficas de peso y talla a lo largo del tiempo, con tooltip al tocar y tabla
   de datos. Modo claro y oscuro automático.
+- Percentiles OMS: indica en qué percentil están el peso y la talla según la
+  edad y el sexo, dibuja las curvas P3–P97 en las gráficas y avisa si el niño
+  sube o baja de percentil entre registros.
 - Galería de fotos ordenada por edad.
 - Respaldo: exporta/importa todo (perfiles, registros y fotos) en un archivo
   JSON que puedes guardar en iCloud o Archivos.
@@ -74,7 +77,8 @@ llave `@NEQUIJOS86891`:
 |---|---|
 | `index.html` | Estructura de la app (vistas, diálogos) |
 | `styles.css` | Estilos, tokens de color claro/oscuro |
-| `app.js` | Lógica: IndexedDB, registros, gráficas SVG, respaldo |
+| `app.js` | Lógica: IndexedDB, registros, gráficas SVG, percentiles, respaldo |
+| `who.js` | Tablas LMS de la OMS (2006 y 2007) y cálculo de puntaje z / percentil |
 | `sw.js` | Service worker (caché para funcionar offline) |
 | `manifest.webmanifest` | Manifiesto PWA (nombre, íconos, standalone) |
 | `icons/` | Íconos de la app |
